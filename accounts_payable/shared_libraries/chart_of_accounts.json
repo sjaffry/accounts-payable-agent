@@ -1,0 +1,136 @@
+{
+  "_description": "Chart of accounts mapping for Australian small business clients in Xero. Keys are lowercase keyword fragments; values are Xero account objects. The XeroBillAgent uses this for deterministic line-item account code assignment, falling back to LLM classification for unknown descriptions.",
+  "accounts": [
+    {
+      "keywords": ["office supplies", "stationery", "printer", "paper", "pens", "ink", "toner"],
+      "account_code": "420",
+      "account_name": "Office Supplies",
+      "tax_type": "INPUT"
+    },
+    {
+      "keywords": ["rent", "lease", "tenancy", "premises"],
+      "account_code": "469",
+      "account_name": "Rent",
+      "tax_type": "INPUT"
+    },
+    {
+      "keywords": ["electricity", "gas", "water", "utility", "utilities", "power"],
+      "account_code": "445",
+      "account_name": "Utilities",
+      "tax_type": "INPUT"
+    },
+    {
+      "keywords": ["telephone", "phone", "mobile", "internet", "broadband", "telco", "isp"],
+      "account_code": "489",
+      "account_name": "Telephone & Internet",
+      "tax_type": "INPUT"
+    },
+    {
+      "keywords": ["accounting", "bookkeeping", "audit", "tax agent", "bas"],
+      "account_code": "404",
+      "account_name": "Accounting Fees",
+      "tax_type": "INPUT"
+    },
+    {
+      "keywords": ["legal", "solicitor", "lawyer", "conveyancing"],
+      "account_code": "416",
+      "account_name": "Legal Fees",
+      "tax_type": "INPUT"
+    },
+    {
+      "keywords": ["advertising", "marketing", "social media", "google ads", "facebook ads", "promotion"],
+      "account_code": "400",
+      "account_name": "Advertising & Marketing",
+      "tax_type": "INPUT"
+    },
+    {
+      "keywords": ["insurance", "policy", "premium", "indemnity"],
+      "account_code": "453",
+      "account_name": "Insurance",
+      "tax_type": "INPUT"
+    },
+    {
+      "keywords": ["cleaning", "janitorial", "pest control"],
+      "account_code": "408",
+      "account_name": "Cleaning",
+      "tax_type": "INPUT"
+    },
+    {
+      "keywords": ["repairs", "maintenance", "service", "labour", "fix"],
+      "account_code": "461",
+      "account_name": "Repairs & Maintenance",
+      "tax_type": "INPUT"
+    },
+    {
+      "keywords": ["travel", "airfare", "flights", "accommodation", "hotel", "motel"],
+      "account_code": "493",
+      "account_name": "Travel & Accommodation",
+      "tax_type": "INPUT"
+    },
+    {
+      "keywords": ["motor vehicle", "car", "fuel", "petrol", "diesel", "parking", "tolls"],
+      "account_code": "449",
+      "account_name": "Motor Vehicle Expenses",
+      "tax_type": "INPUT"
+    },
+    {
+      "keywords": ["subscription", "software", "saas", "license", "licence", "app"],
+      "account_code": "485",
+      "account_name": "Subscriptions",
+      "tax_type": "INPUT"
+    },
+    {
+      "keywords": ["inventory", "stock", "goods", "merchandise", "product", "purchase"],
+      "account_code": "300",
+      "account_name": "Purchases",
+      "tax_type": "INPUT"
+    },
+    {
+      "keywords": ["training", "education", "conference", "seminar", "course"],
+      "account_code": "476",
+      "account_name": "Training & Education",
+      "tax_type": "INPUT"
+    },
+    {
+      "keywords": ["bank fees", "merchant fees", "transaction fees", "bank charges"],
+      "account_code": "404",
+      "account_name": "Bank Fees",
+      "tax_type": "NONE"
+    },
+    {
+      "keywords": ["postage", "courier", "freight", "delivery", "shipping"],
+      "account_code": "457",
+      "account_name": "Postage & Freight",
+      "tax_type": "INPUT"
+    },
+    {
+      "keywords": ["wages", "salary", "payroll", "superannuation", "super"],
+      "account_code": "477",
+      "account_name": "Wages & Salaries",
+      "tax_type": "NONE"
+    },
+    {
+      "keywords": ["equipment", "furniture", "computer", "laptop", "hardware", "machinery"],
+      "account_code": "720",
+      "account_name": "Equipment",
+      "tax_type": "INPUT"
+    }
+  ],
+  "default": {
+    "account_code": "429",
+    "account_name": "General Expenses",
+    "tax_type": "INPUT"
+  },
+  "tax_rates": {
+    "INPUT": {
+      "xero_tax_type": "INPUT",
+      "display_name": "GST on Expenses",
+      "rate": 0.1
+    },
+    "NONE": {
+      "xero_tax_type": "NONE",
+      "display_name": "No GST",
+      "rate": 0.0
+    }
+  }
+}

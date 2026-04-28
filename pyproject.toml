@@ -1,0 +1,52 @@
+[project]
+name = "accounts-payable"
+version = "1.0.0"
+description = "Accounts Payable Agent -- Automated AP workflow using Xero API"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+keywords = ['agent-catalog', 'adk', 'agent']
+readme = "README.md"
+
+dependencies = [
+    "google-adk>=1.0.0",
+    "google-cloud-aiplatform>=1.38.0",
+    "vertexai>=1.38.0",
+    "pydantic>=2.8.0",
+    "pdfplumber>=0.10.0",
+    "python-dotenv>=1.0.0",
+    "requests>=2.31.0",
+    "requests-oauthlib>=1.3.1",
+]
+
+[project.urls]
+Repository = "https://github.com/GoogleCloudPlatform/adk-samples"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.9",
+    "agent-starter-pack>=0.14.1",
+]
+
+[tool.agent_packs]
+template = "adk"
+
+[tool.agent-starter-pack]
+example_question = "Process the invoice at invoices/acme_invoice_001.pdf"
+
+[tool.agent-starter-pack.settings]
+agent_directory = "accounts_payable"
+
+[[tool.uv.index]]
+name = "default"
+url = "https://pypi.org/simple"
+default = true
+
+[tool.ruff]
+extend = "../../../pyproject.toml"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]

@@ -10,7 +10,7 @@ Uses the Xero MCP server tools: list-contacts, create-contact.
 from google.adk.agents import LlmAgent
 from google.genai import types
 
-from accounts_payable.shared_libraries.xero_mcp_toolset import create_xero_mcp_toolset
+from ...shared_libraries.xero_mcp_toolset import create_xero_mcp_toolset
 
 XERO_CONTACT_INSTRUCTION = """
 You are a Xero contact management specialist. Your job is to find or create

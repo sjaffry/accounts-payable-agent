@@ -11,7 +11,7 @@ list-invoices) and direct API calls for PDF attachment (no MCP equivalent).
 from google.adk.agents import LlmAgent
 from google.genai import types
 
-from accounts_payable.shared_libraries.xero_mcp_toolset import create_xero_mcp_toolset
+from ...shared_libraries.xero_mcp_toolset import create_xero_mcp_toolset
 
 from .tools import attach_invoice_pdf, map_account_code
 

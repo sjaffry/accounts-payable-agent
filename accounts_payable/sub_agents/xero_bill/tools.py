@@ -16,7 +16,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from accounts_payable.shared_libraries.xero_client import XeroClient
+from ...shared_libraries.xero_client import XeroClient
 
 _CHART_PATH = Path(__file__).resolve().parent.parent.parent / "shared_libraries" / "chart_of_accounts.json"
 _chart: dict | None = None

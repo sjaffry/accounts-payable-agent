@@ -2,3 +2,4 @@
 .adk/
 **/__pycache__/
 *.pyc
+accounts_payable/data/.xero_tokens.json

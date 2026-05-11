@@ -14,9 +14,11 @@ import json
 import re
 from pathlib import Path
 
+import os
+
 import pdfplumber
-from google import genai
-from google.genai import types as genai_types
+import vertexai
+from vertexai.generative_models import GenerativeModel, Part
 
 # ---------------------------------------------------------------------------
 # Internal helpers
@@ -43,15 +45,16 @@ def _pdf_to_text(pdf_path: str) -> str:
 
 def _call_gemini(prompt: str, pdf_path: str) -> str:
     """Send the PDF + prompt to Gemini and return the raw text response."""
-    client = genai.Client()  # reads GOOGLE_API_KEY from environment
-    pdf_bytes = Path(pdf_path).read_bytes()
-    response = client.models.generate_content(
-        model=_MODEL_NAME,
-        contents=[
-            genai_types.Part.from_bytes(data=pdf_bytes, mime_type="application/pdf"),
-            prompt,
-        ],
+    vertexai.init(
+        project=os.environ.get("GOOGLE_CLOUD_PROJECT"),
+        location=os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1"),
     )
+    model = GenerativeModel(_MODEL_NAME)
+    pdf_bytes = Path(pdf_path).read_bytes()
+    response = model.generate_content([
+        Part.from_data(data=pdf_bytes, mime_type="application/pdf"),
+        prompt,
+    ])
     return response.text.strip()
 
 

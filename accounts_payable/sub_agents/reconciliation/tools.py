@@ -16,8 +16,9 @@ The following operation is handled via the Xero MCP server:
 from __future__ import annotations
 
 import json
+import pprint
 
-from accounts_payable.shared_libraries.xero_client import XeroClient
+from ...shared_libraries.xero_client import XeroClient
 
 
 def get_unreconciled_transactions(bank_account_id: str) -> dict:
@@ -37,13 +38,19 @@ def get_unreconciled_transactions(bank_account_id: str) -> dict:
     """
     client = XeroClient()
     try:
-        data = client.get(
-            "BankTransactions",
-            params={
-                "where": f'BankAccount.AccountID=="{bank_account_id}" AND IsReconciled==false AND Type=="SPEND"',
-                "order": "Date DESC",
-            },
-        )
+        params = {
+            "where": f'BankAccount.AccountID=Guid("{bank_account_id}") AND IsReconciled==false AND Type=="SPEND"',
+            "order": "Date DESC",
+        }
+        print("[get_unreconciled_transactions] REQUEST:")
+        print(f"  endpoint: BankTransactions")
+        print(f"  params: {pprint.pformat(params)}")
+
+        data = client.get("BankTransactions", params=params)
+
+        print("[get_unreconciled_transactions] RESPONSE:")
+        print(pprint.pformat(data))
+
         txns = data.get("BankTransactions", [])
         simplified = [
             {
@@ -58,6 +65,7 @@ def get_unreconciled_transactions(bank_account_id: str) -> dict:
         ]
         return {"transactions": simplified, "count": len(simplified)}
     except Exception as e:
+        print(f"[get_unreconciled_transactions] ERROR: {e}")
         return {"transactions": [], "count": 0, "error": str(e)}
 
 

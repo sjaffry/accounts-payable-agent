@@ -11,7 +11,7 @@ create-payment, list-payments.
 from google.adk.agents import LlmAgent
 from google.genai import types
 
-from accounts_payable.shared_libraries.xero_mcp_toolset import create_xero_mcp_toolset
+from ...shared_libraries.xero_mcp_toolset import create_xero_mcp_toolset
 
 XERO_PAYMENT_INSTRUCTION = """
 You are a Xero payment specialist. Your job is to record supplier payments

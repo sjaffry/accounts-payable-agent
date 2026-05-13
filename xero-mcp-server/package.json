@@ -1,0 +1,13 @@
+{
+  "name": "xero-mcp-server-proxy",
+  "version": "1.0.0",
+  "description": "HTTP SSE proxy for @xeroapi/xero-mcp-server — spawns a fresh MCP subprocess per connection with a client_credentials token.",
+  "type": "module",
+  "main": "server.mjs",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "@xeroapi/xero-mcp-server": "latest"
+  }
+}

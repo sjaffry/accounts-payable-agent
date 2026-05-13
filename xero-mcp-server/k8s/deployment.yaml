@@ -1,0 +1,90 @@
+# Create the Kubernetes Secret first (run once):
+#
+#   kubectl create secret generic xero-credentials \
+#     --from-literal=client-id=YOUR_XERO_CLIENT_ID \
+#     --from-literal=client-secret=YOUR_XERO_CLIENT_SECRET \
+#     --from-literal=tenant-id=YOUR_XERO_TENANT_ID
+#
+# Then apply this file:
+#   kubectl apply -f deployment.yaml
+#
+# The agent connects to: http://xero-mcp-server/sse  (within the cluster)
+# Set XERO_MCP_SERVER_URL=http://xero-mcp-server/sse in your agent deployment.
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xero-mcp-server
+  labels:
+    app: xero-mcp-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xero-mcp-server
+  template:
+    metadata:
+      labels:
+        app: xero-mcp-server
+    spec:
+      containers:
+        - name: xero-mcp-server
+          image: xero-mcp-server:latest   # replace with your registry image
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: XERO_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: xero-credentials
+                  key: client-id
+            - name: XERO_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: xero-credentials
+                  key: client-secret
+            - name: XERO_TENANT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: xero-credentials
+                  key: tenant-id
+            - name: XERO_SCOPES
+              value: "accounting.transactions accounting.contacts accounting.settings accounting.reports.read accounting.attachments"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xero-mcp-server
+spec:
+  selector:
+    app: xero-mcp-server
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: ClusterIP

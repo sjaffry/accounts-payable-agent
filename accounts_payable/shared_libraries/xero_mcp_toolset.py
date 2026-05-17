@@ -27,7 +27,7 @@ from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset, SseConnectionParam
 
 
 def create_xero_mcp_toolset() -> MCPToolset:
-    """Create an MCPToolset that connects to the Xero MCP HTTP SSE server.
+    """Create an MCPToolset that connects to the Xero MCP HTTP SSE server..
 
     Returns:
         MCPToolset configured to connect via the XERO_MCP_SERVER_URL endpoint.

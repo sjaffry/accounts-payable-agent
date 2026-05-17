@@ -27,13 +27,27 @@ from vertexai.generative_models import GenerativeModel, Part
 _MODEL_NAME = "gemini-2.5-flash"
 
 
-def _pdf_to_base64(pdf_path: str) -> str:
-    """Return the raw PDF bytes as a base64 string for Gemini."""
-    return base64.b64encode(Path(pdf_path).read_bytes()).decode()
+def _is_gcs(path: str) -> bool:
+    return path.startswith("gs://")
 
 
 def _pdf_to_text(pdf_path: str) -> str:
     """Extract plain text from each page of the PDF (fallback for text-based PDFs)."""
+    if _is_gcs(pdf_path):
+        # Download to memory for pdfplumber
+        from google.cloud import storage
+        import io
+        _, _, bucket_name, blob_path = pdf_path.split("/", 3)
+        client = storage.Client()
+        bucket = client.bucket(bucket_name)
+        pdf_bytes = bucket.blob(blob_path).download_as_bytes()
+        lines = []
+        with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
+            for page in pdf.pages:
+                text = page.extract_text()
+                if text:
+                    lines.append(text)
+        return "\n".join(lines)
     lines = []
     with pdfplumber.open(pdf_path) as pdf:
         for page in pdf.pages:
@@ -50,11 +64,12 @@ def _call_gemini(prompt: str, pdf_path: str) -> str:
         location=os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1"),
     )
     model = GenerativeModel(_MODEL_NAME)
-    pdf_bytes = Path(pdf_path).read_bytes()
-    response = model.generate_content([
-        Part.from_data(data=pdf_bytes, mime_type="application/pdf"),
-        prompt,
-    ])
+    if _is_gcs(pdf_path):
+        # Pass GCS URI directly — no download required
+        pdf_part = Part.from_uri(pdf_path, mime_type="application/pdf")
+    else:
+        pdf_part = Part.from_data(data=Path(pdf_path).read_bytes(), mime_type="application/pdf")
+    response = model.generate_content([pdf_part, prompt])
     return response.text.strip()
 
 
@@ -170,6 +185,7 @@ Rules:
 - extraction_confidence should reflect how clearly the document presents the data.
 """
     try:
+        print(f"Extracting invoice data from PDF: {pdf_path}")
         response_text = _call_gemini(prompt, pdf_path)
         return _extract_json(response_text)
     except Exception as e:
